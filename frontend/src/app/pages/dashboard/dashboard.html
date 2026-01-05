@@ -1,0 +1,173 @@
+<div class="min-h-screen pb-12">
+    <!-- Navbar -->
+    <nav class="glass border-b border-white/10 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <span
+                            class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">TaskMaster</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <span class="text-indigo-200 font-medium">{{ authService.currentUser()?.username }}</span>
+                    <button (click)="authService.logout()"
+                        class="text-gray-400 hover:text-white transition-colors flex items-center gap-2 group">
+                        <span>Logout</span>
+                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
+        <div class="px-4 sm:px-0 animate-fade-in">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-indigo-500/20 p-2 rounded-lg text-indigo-300">
+                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </span>
+                    Your Projects
+                </h1>
+                <button (click)="toggleModal()"
+                    class="glass-button px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    New Project
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div *ngIf="isLoading()" class="flex justify-center py-20">
+                <div class="relative w-20 h-20">
+                    <div
+                        class="absolute top-0 left-0 w-full h-full border-4 border-indigo-500/30 rounded-full animate-ping">
+                    </div>
+                    <div
+                        class="absolute top-0 left-0 w-full h-full border-4 border-t-indigo-500 rounded-full animate-spin">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="!isLoading() && projects().length === 0"
+                class="glass rounded-2xl p-12 text-center border-dashed border-2 border-gray-700 animate-slide-up">
+                <div
+                    class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-600">
+                    <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-medium text-white mb-2">No projects yet</h3>
+                <p class="text-gray-400 mb-8 max-w-md mx-auto">Get started by creating your first project to manage
+                    tasks and track progress.</p>
+                <button (click)="toggleModal()"
+                    class="glass-button px-8 py-3 rounded-xl text-base font-bold inline-flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Create Project
+                </button>
+            </div>
+
+            <!-- Project Grid -->
+            <div *ngIf="!isLoading() && projects().length > 0"
+                class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <a *ngFor="let project of projects(); let i = index" [routerLink]="['/projects', project.id]"
+                    class="glass-card p-6 group block h-full flex flex-col" [style.animation-delay]="(i * 100) + 'ms'">
+                    <div class="flex justify-between items-start mb-4">
+                        <div
+                            class="p-3 rounded-xl bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                            </svg>
+                        </div>
+                        <span [class.bg-green-500-20]="project.status === 'ACTIVE'"
+                            [class.text-green-300]="project.status === 'ACTIVE'"
+                            [class.bg-gray-700-50]="project.status === 'DRAFT'"
+                            [class.text-gray-300]="project.status === 'DRAFT'"
+                            class="glass px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase border border-white/5">
+                            {{ project.status }}
+                        </span>
+                    </div>
+
+                    <h3
+                        class="text-xl font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors truncate">
+                        {{ project.name }}
+                    </h3>
+                    <p class="text-gray-400 text-sm line-clamp-3 mb-4 flex-grow">
+                        {{ project.description }}
+                    </p>
+
+                    <div
+                        class="flex items-center text-sm text-gray-500 mt-auto pt-4 border-t border-white/5 group-hover:border-white/10 transition-colors">
+                        <span class="flex items-center gap-1 group-hover:text-indigo-300 transition-colors">
+                            View Details
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create Project Modal -->
+    <div *ngIf="showCreateModal()" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title"
+        role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity animate-fade-in"
+                (click)="toggleModal()"></div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div
+                class="inline-block align-bottom glass rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full animate-slide-up border border-white/10">
+                <form [formGroup]="createProjectForm" (ngSubmit)="createProject()">
+                    <div class="px-6 py-6">
+                        <h3 class="text-2xl font-bold text-white mb-6" id="modal-title">
+                            Create New Project
+                        </h3>
+                        <div class="space-y-5">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                                <input type="text" id="name" formControlName="name"
+                                    class="glass-input w-full rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/50 outline-none">
+                            </div>
+                            <div>
+                                <label for="description"
+                                    class="block text-sm font-medium text-gray-300 mb-1">Description</label>
+                                <textarea id="description" rows="3" formControlName="description"
+                                    class="glass-input w-full rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/50 outline-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800/50 px-6 py-4 flex flex-row-reverse gap-3 border-t border-white/5">
+                        <button type="submit" [disabled]="createProjectForm.invalid"
+                            class="glass-button px-6 py-2 rounded-xl text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed">
+                            Create Project
+                        </button>
+                        <button type="button" (click)="toggleModal()"
+                            class="px-6 py-2 rounded-xl text-sm font-bold text-gray-300 hover:bg-gray-700/50 transition-colors border border-transparent hover:border-gray-600">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
