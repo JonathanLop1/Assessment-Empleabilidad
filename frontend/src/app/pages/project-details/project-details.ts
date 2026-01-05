@@ -112,9 +112,24 @@ export class ProjectDetailsComponent implements OnInit {
       this.projectService.activateProject(projectId).subscribe({
         next: () => {
           this.loadProject();
+        },
+        error: (err) => {
+          if (err.status === 400) {
+            this.errorMessage.set('Cannot activate project: You must add at least one task first.');
+          } else {
+            this.errorMessage.set('Failed to activate project. Please try again.');
+          }
+          this.showErrorModal.set(true);
         }
       });
     }
+  }
+
+  showErrorModal = signal(false);
+  errorMessage = signal('');
+
+  closeErrorModal() {
+    this.showErrorModal.set(false);
   }
 
   toggleModal() {
