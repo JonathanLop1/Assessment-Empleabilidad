@@ -136,7 +136,7 @@ Si no quieres detener el otro servicio, configuremos este proyecto en el puerto 
     
     *Linux/Mac:*
     ```bash
-    export DB_PORT=5433
+    export DB_PORT=5432
     export DB_HOST=localhost
     export DB_NAME=projectdb
     export DB_USER=projectuser
@@ -149,7 +149,7 @@ Si no quieres detener el otro servicio, configuremos este proyecto en el puerto 
 
     *Windows (CMD):*
     ```cmd
-    set DB_PORT=5433
+    set DB_PORT=5432
     set DB_HOST=localhost
     set DB_NAME=projectdb
     set DB_USER=projectuser
@@ -160,20 +160,21 @@ Si no quieres detener el otro servicio, configuremos este proyecto en el puerto 
     ```
 
 3.  **Frontend**:
-    El frontend sigue funcionando igual:
+    El frontend sigue funcionando igual. **¡Importante!** No olvides ejecutar `npm install` la primera vez.
     ```bash
     cd frontend
-    npm install
+    npm install  # <--- ¡IMPORTANTE! Esto descarga las librerías necesarias.
     ng serve
     ```
 
 ### 2. Error de Docker: "iptables failed" o "Network creation failed"
-Si `docker-compose up` falla con errores de red extraños, intenta reiniciar el servicio de Docker o usa la **Opción Manual** descrita arriba (levantar cada servicio por separado).
+Si `docker-compose up` falla con errores de red (común en algunos entornos Linux), la solución más confiable es **no usar docker-compose** y levantar la base de datos manualmente como explicamos en el **Paso 1 (Base de Datos / Manual)** arriba.
 
-Para reiniciar Docker y limpiar redes (¡Cuidado! Esto borra redes no usadas):
+### 3. Error: "Container name /projectdb is already in use"
+Si intentas correr el comando de Docker y te dice que el nombre ya existe, bórralo primero con este comando y vuelve a intentar:
+
 ```bash
-docker network prune
-sudo systemctl restart docker
+docker rm -f projectdb
 ```
 
 ---
